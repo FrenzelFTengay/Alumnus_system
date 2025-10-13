@@ -27,3 +27,11 @@ Route::get('/log_in', function () {
     return view('log_in');
 });
 
+
+Route::get('/tables', function () {
+    $tables = DB::select('SHOW TABLES');
+    return view('tables', ['tables' => $tables]);
+});
+
+
+Route::get('/alumni', 'AlumniController@index');
