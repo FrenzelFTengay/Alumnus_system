@@ -19,3 +19,6 @@ Route::get('/graduates', [GraduatesController::class, 'index']);
 
 // Routes for events
 Route::get('/events', [EventsController::class, 'index']);
+
+//Routes event
+Route::get('/events/{id}', [EventsController::class, 'show']);
