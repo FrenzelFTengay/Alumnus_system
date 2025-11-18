@@ -1,0 +1,73 @@
+<?PHP
+namedspace App\Http\Controllers;
+use App\Models\Admin;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
+class AdminController extends Controller
+{
+    // READ all admins
+    public function index()
+    {
+        $admins = Admin::all();
+        return response()->json($admins);
+    }  // CREATE admin
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'name'     => 'required',
+            'email'    => 'required|email|unique:admins,email',
+            'password' => 'required|min:6',
+            'role'     => 'required',
+        ]);
+
+        $data['password'] = Hash::make($data['password']);
+
+        $admin = Admin::create($data);
+
+        return response()->json([
+            'message' => 'Admin created successfully',
+            'data' => $admin
+        ], 201);
+    }
+
+    // READ single admin
+    public function show($id)
+    {
+        $admin = Admin::findOrFail($id);
+        return response()->json($admin);
+    }
+
+    // UPDATE admin
+    public function update(Request $request, $id)
+    {
+        $admin = Admin::findOrFail($id);
+
+        $data = $request->validate([
+            'name'     => 'sometimes|required',
+            'email'    => 'sometimes|required|email|unique:admins,email,' . $id,
+            'password' => 'sometimes|required|min:6',
+            'role'     => 'sometimes|required',
+        ]);
+
+        if (isset($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        }
+
+        $admin->update($data);
+
+        return response()->json([
+            'message' => 'Admin updated successfully',
+            'data' => $admin
+        ]);
+    }
+
+    // DELETE admin
+    public function destroy($id)
+    {
+        $admin = Admin::findOrFail($id);
+        $admin->delete();
+
+        return response()->json(['message' => 'Admin deleted successfully']);
+    }
+}
