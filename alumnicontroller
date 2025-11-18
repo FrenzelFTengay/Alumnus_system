@@ -1,0 +1,62 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+class AlumniController extends Controller
+{
+    // READ all
+    public function index()
+    {
+        $alumni = Alumni::all();
+        return response()->json($alumni);
+    }    // CREATE
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'first_name' => 'required',
+            'last_name'  => 'required',
+            'email'      => 'required|email|unique:alumnis,email',
+            'course'     => 'required',
+            'batch_year' => 'required|digits:4',
+        ]);
+         $alumni = Alumni::create($data);
+
+        return response()->json([
+            'message' => 'Alumni created successfully',
+            'data' => $alumni
+        ], 201);
+    }
+
+    // READ single record
+    public function show($id)
+    {
+        $alumni = Alumni::findOrFail($id);
+        return response()->json($alumni);
+    }
+    // UPDATE
+    public function update(Request $request, $id)
+    {
+        $alumni = Alumni::findOrFail($id);
+
+        $data = $request->validate([
+            'first_name' => 'sometimes|required',
+            'last_name'  => 'sometimes|required',
+            'email'      => 'sometimes|required|email|unique:alumnis,email,' . $id,
+            'course'     => 'sometimes|required',
+            'batch_year' => 'sometimes|required|digits:4',
+        ]);  $alumni->update($data);
+
+        return response()->json([
+            'message' => 'Alumni updated successfully',
+            'data' => $alumni
+        ]);
+    }
+
+    // DELETE
+    public function destroy($id)
+    {
+        $alumni = Alumni::findOrFail($id);
+        $alumni->delete();
+
+        return response()->json(['message' => 'Alumni deleted successfully']);
+    }
+}
