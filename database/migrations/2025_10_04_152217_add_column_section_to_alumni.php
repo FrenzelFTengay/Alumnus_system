@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('batch', function (Blueprint $table) {
-            $table->id();
-            $table->string('batch_name');
-            $table->date('batch_year');
-            $table->foreignId('batch_curriculumn');
-            $table->timestamps();
+        Schema::table('alumni', function  (Blueprint $table) {
+            //
+            $table->string('section');
         });
     }
 
@@ -25,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('_batch');
+        Schema::table('alumni', function (Blueprint $table) {
+            //
+        });
     }
 };
